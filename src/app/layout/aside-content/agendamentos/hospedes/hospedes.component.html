@@ -1,0 +1,236 @@
+<section class="conteudo">
+
+  <div class="titulo-da-pagina">
+    <h1>Hospedes | - <span class="material-icons">home</span>
+      <span style="font-size: 14px;
+                    position: relative;
+                    bottom: 2px;
+                    padding-left: 5px;">
+        Agendamentos > Hospedes
+      </span>
+    </h1>
+  </div>
+
+  <div class="pesquisar-e-botao">
+
+    <div class="filtro">
+      <input matInput
+             placeholder="Digite sua busca"
+             (keyup)="applyFilter($event)"
+             #input>
+    </div>
+
+    <span class="material-icons filtro-icon">search</span>
+    <button mat-raised-button
+            color="primary"
+            class="button-novo"
+            (click)="adicionarHospede(modalHospede)">
+          Novo
+    </button>
+  </div>
+
+  <!-- tabela -->
+  <div class="bg-table-e-pesquisa">
+    <div class="tabela">
+      <table mat-table
+             [dataSource]="dataSource"
+             class="mat-elevation-z8">
+
+        <ng-container matColumnDef="nome">
+          <th mat-header-cell
+              *matHeaderCellDef> Nome </th>
+          <td mat-cell
+              *matCellDef="let element">
+              {{element.nome}} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="email">
+          <th mat-header-cell
+              *matHeaderCellDef> Email </th>
+          <td mat-cell
+              *matCellDef="let element">
+              {{element.email}} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="rg">
+          <th mat-header-cell
+              *matHeaderCellDef> RG </th>
+          <td mat-cell
+              *matCellDef="let element">
+              {{element.rg | mask: '00.000.000-00'}} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="telefone">
+          <th mat-header-cell
+              *matHeaderCellDef> Telefone </th>
+          <td mat-cell
+              *matCellDef="let element">
+              {{element.telefone | mask: '(00)00000-0000'}} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="editar" sticky>
+          <th mat-header-cell
+              *matHeaderCellDef
+              style="text-align: center; width: 100px">
+            Editar
+          </th>
+          <td mat-cell
+              *matCellDef="let element; let i = dataIndex"
+              style="display: table-cell; text-align: center">
+            <a href="#" onClick="return false;"
+                (click)="buttonEdit(element, modalHospede, i)">
+              <mat-icon style="color:cornflowerblue;">edit</mat-icon>
+            </a>
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="excluir" sticky>
+          <th mat-header-cell
+              *matHeaderCellDef
+              style="text-align: center; width: 100px">
+            Excluir
+          </th>
+          <td mat-cell
+              *matCellDef="let element; let i = dataIndex"
+              style="display: table-cell; text-align: center">
+            <a href="#" onClick="return false;"
+                (click)="buttonRemove(element)">
+              <mat-icon style="color: tomato;">delete</mat-icon>
+            </a>
+          </td>
+        </ng-container>
+
+        <tr mat-header-row
+            *matHeaderRowDef="columnsToDisplay"></tr>
+        <tr mat-row
+            *matRowDef="let row; columns: columnsToDisplay;"></tr>
+
+        <!-- Row shown when there is no matching data. -->
+        <tr class="mat-row"
+            *matNoDataRow>
+          <td class="mat-cell text-center"
+              colspan="11">
+            Nenhum hospede encontrado.
+          </td>
+        </tr>
+      </table>
+      <mat-paginator [pageSize]="10"
+                     showFirstLastButtons></mat-paginator>
+    </div>
+  </div>
+
+
+  <!-- formulario -->
+  <ng-template #modalHospede>
+    <div mat-dialog-title>
+      <h1>{{ edit ? 'Editar Hospede' : 'Novo Hospede' }}</h1>
+    </div>
+    <div mat-dialog-content>
+      <form
+            [formGroup]="hospedeForm"
+            id="hospedeForm"
+            (ngSubmit)="onSubmit()">
+
+        <div>
+          <mat-form-field appearance="fill"
+                          class="width-form">
+            <mat-label>Nome</mat-label>
+            <input required
+                   type="text"
+                   matInput
+                   name="nome"
+                   id="nome"
+                   formControlName="nome"
+                   [(ngModel)]="hospede.nome" />
+            <mat-icon matSuffix>face</mat-icon>
+          </mat-form-field>
+        </div>
+        <div>
+          <mat-form-field appearance="fill"
+                          class="width-form">
+            <mat-label>Email</mat-label>
+            <input required
+                   type="text"
+                   matInput
+                   name="email"
+                   id="email"
+                   formControlName="email"
+                   [(ngModel)]="hospede.email" />
+            <mat-icon matSuffix>mail</mat-icon>
+          </mat-form-field>
+        </div>
+        <div>
+          <mat-form-field appearance="fill"
+                          class="width-form">
+            <mat-label>RG</mat-label>
+            <input required
+                   type="text"
+                   matInput
+                   mask="00.000.000-0"
+                   name="rg"
+                   id="rg"
+                   formControlName="rg"
+                   [(ngModel)]="hospede.rg" />
+            <mat-icon matSuffix>fingerprint</mat-icon>
+          </mat-form-field>
+        </div>
+        <div>
+          <mat-form-field appearance="fill"
+                          class="width-form">
+            <mat-label>CPF</mat-label>
+            <input type="text"
+                   matInput
+                   mask="000.000.000-00"
+                   name="cpf"
+                   id="cpf"
+                   formControlName="cpf"
+                   [(ngModel)]="hospede.cpf" />
+            <mat-icon matSuffix>fingerprint</mat-icon>
+          </mat-form-field>
+        </div>
+        <div>
+          <mat-form-field appearance="fill"
+                          class="width-form">
+            <mat-label>Data Nascimento</mat-label>
+            <input type="date"
+                   matInput
+                   name="nascimento"
+                   id="nascimento"
+                   formControlName="dataNasc"
+                   [(ngModel)]="hospede.dataNasc" />
+          </mat-form-field>
+        </div>
+        <div>
+          <mat-form-field appearance="fill"
+                          class="width-form">
+            <mat-label>Telefone</mat-label>
+            <input required
+                   type="text"
+                   matInput
+                   mask="(00)00000-0000"
+                   name="telefone"
+                   id="telefone"
+                   formControlName="telefone"
+                   [(ngModel)]="hospede.telefone" />
+            <mat-icon matSuffix>phone</mat-icon>
+          </mat-form-field>
+        </div>
+      </form>
+    </div>
+
+    <div mat-dialog-actions
+         class="position-actions">
+      <button mat-raised-button
+              class="mat-button-cancel"
+              [mat-dialog-close]="false">Cancelar
+      </button>
+      <button mat-raised-button
+              class="mat-button-confirm"
+              type="submit"
+              form="hospedeForm"
+              cdkFocusInitial>
+              {{ edit ? 'Editar' : 'Salvar' }}
+      </button>
+    </div>
+  </ng-template>
+</section>

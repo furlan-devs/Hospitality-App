@@ -1,0 +1,320 @@
+<section class="conteudo">
+
+  <div class="titulo-da-pagina">
+    <h1>Reservas | - <span class="material-icons">home</span>
+      <span style="font-size: 14px;
+                    position: relative;
+                    bottom: 2px;
+                    padding-left: 5px;">
+        Agendamentos > Reservas
+      </span>
+    </h1>
+  </div>
+
+  <div class="pesquisar-e-botao">
+
+    <div class="filtro">
+      <input matInput
+             placeholder="Digite sua busca"
+             (keyup)="applyFilter($event)"
+             #input>
+    </div>
+
+    <span class="material-icons filtro-icon">search</span>
+    <button mat-raised-button
+            color="primary"
+            class="button-novo"
+            (click)="adicionarReserva(modalReserva)">
+      Novo
+    </button>
+  </div>
+
+  <!-- tabela -->
+  <div class="bg-table-e-pesquisa">
+    <div class="tabela">
+      <table mat-table
+             [dataSource]="dataSource"
+             class="mat-elevation-z8">
+
+        <ng-container matColumnDef="id">
+          <th mat-header-cell
+              *matHeaderCellDef> Identificação </th>
+          <td mat-cell
+              *matCellDef="let element">
+            {{element.id}} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="hospedeId">
+          <th mat-header-cell
+              *matHeaderCellDef> Hospede </th>
+          <td mat-cell
+              *matCellDef="let element">
+              {{getNomeHospede(element.hospedeId)}} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="funcionarioId">
+          <th mat-header-cell
+              *matHeaderCellDef> Funcionário </th>
+          <td mat-cell
+              *matCellDef="let element">
+            {{getNomeFuncionario(element.funcionarioId)}} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="quartoId">
+          <th mat-header-cell
+              *matHeaderCellDef> Quarto </th>
+          <td mat-cell
+              *matCellDef="let element">
+              {{getNumeroQuarto(element.quartoId)}} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="dataReserva">
+          <th mat-header-cell
+              *matHeaderCellDef> Data Reserva </th>
+          <td mat-cell
+              *matCellDef="let element">
+            {{element.dataReserva | date: 'dd/MM/yyyy'}} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="dataChegada">
+          <th mat-header-cell
+              *matHeaderCellDef> Data Chegada </th>
+          <td mat-cell
+              *matCellDef="let element">
+            {{element.dataChegada | date: 'dd/MM/yyyy'}} </td>
+        </ng-container>
+
+        <!-- <ng-container matColumnDef="dataSaidaPrevista">
+          <th mat-header-cell
+              *matHeaderCellDef> Data Saída Prevista </th>
+          <td mat-cell
+              *matCellDef="let element">
+            {{element.dataSaidaPrevista | date: 'dd/MM/yyyy'}} </td>
+        </ng-container> -->
+
+        <!-- <ng-container matColumnDef="numeroPessoas">
+          <th mat-header-cell
+              *matHeaderCellDef> Número de Pessoas </th>
+          <td mat-cell
+              *matCellDef="let element">
+            {{element.numeroPessoas}} </td>
+        </ng-container> -->
+
+        <ng-container matColumnDef="status">
+          <th mat-header-cell
+              *matHeaderCellDef> Status </th>
+          <td mat-cell
+              *matCellDef="let element">
+            {{statusName(element.status)}} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="editar"
+                      sticky>
+          <th mat-header-cell
+              *matHeaderCellDef
+              style="text-align: center; width: 100px">
+            Editar
+          </th>
+          <td mat-cell
+              *matCellDef="let element; let i = dataIndex"
+              style="display: table-cell; text-align: center">
+            <a href="#"
+               onClick="return false;"
+               (click)="buttonEdit(element, modalReserva, i)">
+              <mat-icon style="color:cornflowerblue;">edit</mat-icon>
+            </a>
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="excluir"
+                      sticky>
+          <th mat-header-cell
+              *matHeaderCellDef
+              style="text-align: center; width: 100px">
+            Excluir
+          </th>
+          <td mat-cell
+              *matCellDef="let element; let i = dataIndex"
+              style="display: table-cell; text-align: center">
+            <a href="#"
+               onClick="return false;"
+               (click)="buttonRemove(element)">
+              <mat-icon style="color: tomato;">delete</mat-icon>
+            </a>
+          </td>
+        </ng-container>
+
+        <tr mat-header-row
+            *matHeaderRowDef="columnsToDisplay"></tr>
+        <tr mat-row
+            *matRowDef="let row; columns: columnsToDisplay;"></tr>
+
+        <!-- Row shown when there is no matching data. -->
+        <tr class="mat-row"
+            *matNoDataRow>
+          <td class="mat-cell text-center"
+              colspan="11">
+            Nenhuma reserva encontrada.
+          </td>
+        </tr>
+      </table>
+      <mat-paginator [pageSize]="10"
+                     showFirstLastButtons></mat-paginator>
+    </div>
+  </div>
+
+
+  <!-- formulario -->
+  <ng-template #modalReserva>
+    <div mat-dialog-title>
+      <h1>{{ edit ? 'Editar Reserva' : 'Nova Reserva' }}</h1>
+    </div>
+    <div mat-dialog-content>
+      <form [formGroup]="reservaForm"
+            id="reservaForm"
+            (ngSubmit)="onSubmit()">
+
+            <div>
+              <mat-form-field appearance="fill"
+                              class="width-form">
+                <mat-label>Hospede</mat-label>
+                <mat-select input
+                            required
+                            name="hospedeId"
+                            id="hospedeId"
+                            formControlName="hospedeId"
+                            [(ngModel)]="reserva.hospedeId">
+                  <mat-option *ngFor="let hospede of hospedes"
+                            [value]="hospede.id">
+                            {{hospede.nome}}
+                  </mat-option>
+                </mat-select>
+                <mat-icon matSuffix>face</mat-icon>
+              </mat-form-field>
+            </div>
+            <div>
+              <mat-form-field appearance="fill"
+                              class="width-form">
+                <mat-label>Funcionário</mat-label>
+                <mat-select input
+                            name="funcionarioId"
+                            id="funcionarioId"
+                            formControlName="funcionarioId"
+                            [(ngModel)]="reserva.funcionarioId">
+                  <mat-option *ngFor="let funcionario of funcionarios"
+                              [value]="funcionario.id">
+                              {{funcionario.nome}}
+                  </mat-option>
+                </mat-select>
+                <mat-icon matSuffix>face</mat-icon>
+              </mat-form-field>
+            </div>
+            <div>
+              <mat-form-field appearance="fill"
+                              class="width-form">
+                <mat-label>Quarto</mat-label>
+                <mat-select input
+                            required
+                            name="quartoId"
+                            id="quartoId"
+                            formControlName="quartoId"
+                            [(ngModel)]="reserva.quartoId">
+                  <mat-option *ngFor="let quarto of quartos"
+                              [value]="quarto.id">
+                              {{quarto.numeroQuarto}}
+                  </mat-option>
+                </mat-select>
+                <mat-icon matSuffix>meeting_room</mat-icon>
+              </mat-form-field>
+            </div>
+
+            <div>
+              <mat-form-field appearance="fill"
+                              class="width-form">
+                <mat-label>Data Reserva</mat-label>
+                <input required
+                       type="date"
+                       matInput
+                       name="dataReserva"
+                       id="dataReserva"
+                       formControlName="dataReserva"
+                       [(ngModel)]="reserva.dataReserva" />
+              </mat-form-field>
+            </div>
+
+            <div>
+              <mat-form-field appearance="fill"
+                              class="width-form">
+                <mat-label>Data Chegada</mat-label>
+                <input required
+                       type="date"
+                       matInput
+                       name="dataChegada"
+                       id="dataChegada"
+                       formControlName="dataChegada"
+                       [(ngModel)]="reserva.dataChegada" />
+              </mat-form-field>
+            </div>
+
+            <div>
+              <mat-form-field appearance="fill"
+                              class="width-form">
+                <mat-label>Data Saída Prevista</mat-label>
+                <input required
+                       type="date"
+                       matInput
+                       name="dataSaidaPrevista"
+                       id="dataSaidaPrevista"
+                       formControlName="dataSaidaPrevista"
+                       [(ngModel)]="reserva.dataSaidaPrevista" />
+              </mat-form-field>
+            </div>
+
+            <div>
+              <mat-form-field appearance="fill"
+                              class="width-form">
+                <mat-label>Número de Pessoas</mat-label>
+                <input type="number"
+                        matInput
+                        name="numeroPessoas"
+                        id="numeroPessoas"
+                        formControlName="numeroPessoas"
+                  [(ngModel)]="reserva.numeroPessoas" />
+                  <mat-icon matSuffix>peoples</mat-icon>
+              </mat-form-field>
+            </div>
+             <div>
+              <mat-form-field appearance="fill"
+                              class="width-form">
+                <mat-label>Status</mat-label>
+                <mat-select required
+                            name="status"
+                            id="status"
+                            formControlName="status"
+                            [(ngModel)]="reserva.status">
+                  <mat-option *ngFor="let stat of status"
+                              [value]="stat.id">
+                              {{ stat.nome }}
+                  </mat-option>
+                  <mat-icon matSuffix>info</mat-icon>
+                </mat-select>
+              </mat-form-field>
+            </div>
+      </form>
+    </div>
+
+    <div mat-dialog-actions
+         class="position-actions">
+      <button mat-raised-button
+              class="mat-button-cancel"
+              [mat-dialog-close]="false">Cancelar
+      </button>
+      <button mat-raised-button
+              class="mat-button-confirm"
+              type="submit"
+              form="reservaForm"
+              cdkFocusInitial>{{ edit ? 'Editar' : 'Salvar' }}
+      </button>
+    </div>
+  </ng-template>
+</section>
