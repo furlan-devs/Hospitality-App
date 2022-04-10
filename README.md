@@ -1,27 +1,42 @@
-# Sidebar
+# TCC-Hotelaria-Front-ANGULAR
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 11.2.12.
+TCC project using Angular CLI version 11.2.12 for Frontend.<br>
+A website for managing users, guests, rooms and bookings.<br>
+Criticism and tips are always welcome!<br><br>
 
-## Development server
+# Requirements
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The app will automatically reload if you change any of the source files.
+- Download/clone the repository.<br>
+- Npm install to install dependencies.<br>
+- Npm start to start the application.<br>
+- Navigate to `http://localhost:4200/`.<br>
 
-## Code scaffolding
+# Images
 
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
 
-## Build
+- <strong>MAIN-PAGE
 
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory. Use the `--prod` flag for a production build.
+![Screenshot_7](https://github.com/furlan-devs/images/blob/8ee8a282472cc798806811fbababb1d89f54db28/main-page.png)<br>
+  <br>
+  
+- <strong>EDIT-FORM
 
-## Running unit tests
+![Screenshot_7](https://github.com/furlan-devs/images/blob/8ee8a282472cc798806811fbababb1d89f54db28/form-edit.png)<br>
+<br>
 
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
+- <strong>NEW-FORM
 
-## Running end-to-end tests
+![Screenshot_7](https://github.com/furlan-devs/images/blob/8ee8a282472cc798806811fbababb1d89f54db28/form-new.png)<br>
+<br>
+  
+- <strong>DELETE-FORM
 
-Run `ng e2e` to execute the end-to-end tests via [Protractor](http://www.protractortest.org/).
+![Screenshot_7](https://github.com/furlan-devs/images/blob/8ee8a282472cc798806811fbababb1d89f54db28/comp-delete.png)<br>
+<br>
 
-## Further help
+<h2>Referencies:</h2>
+- knowledge acquired during the internship<br>
+- Google<br>
 
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI Overview and Command Reference](https://angular.io/cli) page.
+
+
