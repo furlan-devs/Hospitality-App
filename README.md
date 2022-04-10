@@ -7,8 +7,8 @@ Criticism and tips are always welcome!<br><br>
 # Requirements
 
 - Download/clone the repository.<br>
-- Npm install to install dependencies.<br>
-- Npm start to start the application.<br>
+- `Npm install` to install dependencies.<br>
+- `Npm start` to start the application.<br>
 - Navigate to `http://localhost:4200/`.<br>
 
 # Images
